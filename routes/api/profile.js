@@ -6,7 +6,8 @@ const passport = require('passport')
 const Profile = require('../../models/Profile')
 const User = require('../../models/User')
 const validateProfileInput = require('../../validation/profile')
-
+const validateExperienceInput = require('../../validation/experience')
+const validateEducationInput = require('../../validation/education')
 
 router.get('/test', (req, res) => {
     res.json({msg: "Profile works."})
@@ -139,6 +140,111 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
                             })
                     })
             }
+        })
+})
+
+router.post('/experience', passport.authenticate('jwt', {session: false}), (req, res) => {
+    const { errors, isValid } = validateExperienceInput(req.body)
+    if(!isValid) {
+        return res.status(400).json(errors)
+    }
+
+    Profile.findOne({user: req.user.id})
+        .then(profile => {
+            const newExp = {
+                title: req.body.title,
+                company: req.body.company,
+                location: req.body.location,
+                from: req.body.from,
+                to: req.body.to,
+                current: req.body.current,
+                description: req.body.description
+            }
+
+            profile.experience.unshift(newExp)
+
+            profile.save()
+                .then(profile => {
+                    res.json(profile)
+                })
+
+        })
+})
+
+
+router.post('/education', passport.authenticate('jwt', {session: false}), (req, res) => {
+    const { errors, isValid } = validateEducationInput(req.body)
+    if(!isValid) {
+        return res.status(400).json(errors)
+    }
+
+    Profile.findOne({user: req.user.id})
+        .then(profile => {
+            const newEdu = {
+                school: req.body.school,
+                degree: req.body.degree,
+                fieldOfStudy: req.body.fieldOfStudy,
+                from: req.body.from,
+                to: req.body.to,
+                current: req.body.current,
+                description: req.body.description
+            }
+
+            profile.education.unshift(newEdu)
+
+            profile.save()
+                .then(profile => {
+                    res.json(profile)
+                })
+
+        })
+})
+
+
+router.delete('/experience/:exp_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+    
+
+    Profile.findOne({user: req.user.id})
+        .then(profile => {
+            const removeIndex = profile.experience
+                .map(item => {
+                    return item.id
+                })
+                .indexOf(req.params.exp_id)
+            profile.experience.splice(removeIndex, 1)
+            profile.save()
+                .then(profile => res.json(profile))
+                .catch(err => res.status(404).json(err))
+                
+        })
+})
+
+
+router.delete('/education/:exp_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+    
+
+    Profile.findOne({user: req.user.id})
+        .then(profile => {
+            const removeIndex = profile.education
+                .map(item => {
+                    return item.id
+                })
+                .indexOf(req.params.exp_id)
+            profile.education.splice(removeIndex, 1)
+            profile.save()
+                .then(profile => res.json(profile))
+                .catch(err => res.status(404).json(err))
+                
+        })
+})
+
+router.delete('/:user_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+    Profile.findOneAndRemove({ user: req.params.user_id})
+        .then(() => {
+            User.findOneAndRemove({_id: req.params.user_id})
+                .then(() => {
+                    res.json({ success: true})
+                })
         })
 })
 

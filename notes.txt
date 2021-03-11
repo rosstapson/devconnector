@@ -1,6 +1,6 @@
-D:\Downloads\MERN Stack Front To Back Full Stack React, Redux & Node.js\[Tutsgalaxy.com] - MERN Stack Front To Back Full Stack React, Redux & Node.js\04 Profile API Routes
+D:\Downloads\MERN Stack Front To Back Full Stack React, Redux & Node.js\[Tutsgalaxy.com] - MERN Stack Front To Back Full Stack React, Redux & Node.js\05 Post API Routes
 
-021 More Profile API Routes.mp4
+024 Creating The Post Model.mp4
 
 
 https://cloud.mongodb.com/v2/6048cff1ad0ab707d48603e9#metrics/replicaSet/6048d11fc3e93d73556d14b3/explorer/devconnector/test/find
